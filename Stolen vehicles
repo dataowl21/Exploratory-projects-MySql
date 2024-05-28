@@ -1,0 +1,50 @@
+SELECT * 
+FROM motor_vehicles_theft.stolen_vehicles;
+
+SELECT * 
+FROM motor_vehicles_theft.make_details;
+
+-- Changed the wrong column names to the right ones
+
+ALTER TABLE motor_vehicles_theft.stolen_vehicles
+CHANGE ï»¿vehicle_id vehicle_id int;
+
+ALTER TABLE motor_vehicles_theft.make_details
+CHANGE ï»¿make_id make_id int;
+
+-- Checking if there are any duplicates in table make_details (make_name, make_id)
+
+SELECT make_name, COUNT(*)
+FROM motor_vehicles_theft.make_details
+GROUP BY make_name
+HAVING COUNT(*) > 1;
+
+SELECT make_id, COUNT(*)
+FROM motor_vehicles_theft.make_details
+GROUP BY make_id
+HAVING COUNT(*) > 1;
+
+-- Top 5 most stoled vehicles by color
+
+SELECT color, COUNT(vehicle_id)
+FROM motor_vehicles_theft.stolen_vehicles
+GROUP BY color
+ORDER BY COUNT(vehicle_id) desc
+LIMIT 5;
+
+-- Top 5 most popular locations where vehicles are stolen
+
+SELECT location_id, COUNT(vehicle_id)
+FROM motor_vehicles_theft.stolen_vehicles
+GROUP BY location_id
+ORDER BY COUNT(vehicle_id) desc
+LIMIT 5;
+
+-- Top 5 vehicle descriptions of stolen vehicles 
+
+SELECT vehicle_desc, COUNT(vehicle_id)
+FROM motor_vehicles_theft.stolen_vehicles
+GROUP BY vehicle_desc
+ORDER BY COUNT(vehicle_id) desc
+LIMIT 5;
+
