@@ -113,3 +113,21 @@ JOIN motor_vehicles_theft.stolen_vehicles b
     SELECT MAX(total_vehicles_stolen) as max_stolen, MIN(total_vehicles_stolen) as min_stolen
     FROM CTE_count;
 
+    
+-- Number of stolen vehicles per year
+
+SELECT YEAR(date_stolen) as year_stolen,  COUNT(a.make_id) as number_of_stolen_vehicles
+FROM motor_vehicles_theft.make_details a
+JOIN motor_vehicles_theft.stolen_vehicles b
+	ON a.make_id = b.make_id
+GROUP BY  YEAR(date_stolen)
+ORDER BY COUNT(a.make_id) desc;
+
+-- Number of stolen vehicles by year and month
+
+SELECT YEAR(date_stolen) as year_stolen, MONTH(date_stolen) as month_stolen, COUNT(a.make_id) as number_of_stolen_vehicles
+FROM motor_vehicles_theft.make_details a
+JOIN motor_vehicles_theft.stolen_vehicles b
+	ON a.make_id = b.make_id
+GROUP BY  YEAR(date_stolen), MONTH(date_stolen)
+ORDER BY  YEAR(date_stolen), MONTH(date_stolen);
