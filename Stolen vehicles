@@ -48,3 +48,68 @@ GROUP BY vehicle_desc
 ORDER BY COUNT(vehicle_id) desc
 LIMIT 5;
 
+
+-- Percentege by make_type of stolen vehicles
+
+SELECT 
+    make_type,
+    COUNT(make_id) AS total_count,
+   ROUND((COUNT(make_id) * 100.0 / (SELECT COUNT(make_id) FROM motor_vehicles_theft.make_details)) ,2) AS percentage
+FROM 
+    motor_vehicles_theft.make_details
+GROUP BY 
+    make_type;
+
+-- Joined two tables on make_id
+
+SELECT a.make_id,vehicle_type, model_year, color, date_stolen,make_name, make_type
+FROM motor_vehicles_theft.make_details a
+JOIN motor_vehicles_theft.stolen_vehicles b
+	ON a.make_id = b.make_id
+    ORDER BY a.make_id asc;
+    
+-- Total vehicles stolen by make_name and make_type
+
+    SELECT  make_name, make_type, COUNT(a.make_id) as total_vehicles_stolen
+FROM motor_vehicles_theft.make_details a
+JOIN motor_vehicles_theft.stolen_vehicles b
+	ON a.make_id = b.make_id
+    GROUP BY make_name, make_type
+    ORDER BY COUNT(a.make_id) desc;
+    
+-- Added theft_category for each make_name by using CASE statement 
+
+    SELECT  make_name, make_type, COUNT(a.make_id) as total_vehicles_stolen,
+CASE 
+		WHEN COUNT(a.make_id)>= 50 THEN 'High'
+        WHEN COUNT(a.make_id) BETWEEN 10 and 49 THEN 'Medium'
+        WHEN COUNT(a.make_id)<= 9 THEN 'Low'
+END AS theft_category
+FROM motor_vehicles_theft.make_details a
+JOIN motor_vehicles_theft.stolen_vehicles b
+	ON a.make_id = b.make_id
+    GROUP BY make_name, make_type
+    ORDER BY COUNT(a.make_id) desc;
+    
+-- What model_years attracts thefts the most  
+    
+SELECT model_year, COUNT(a.make_id)
+FROM motor_vehicles_theft.make_details a
+JOIN motor_vehicles_theft.stolen_vehicles b
+	ON a.make_id = b.make_id
+GROUP BY model_year
+ORDER BY COUNT(a.make_id) desc;
+
+-- Max and Min vehicles stolen using CTE
+
+WITH CTE_count AS
+(
+    SELECT make_name, COUNT(a.make_id) as total_vehicles_stolen
+FROM motor_vehicles_theft.make_details a
+JOIN motor_vehicles_theft.stolen_vehicles b
+	ON a.make_id = b.make_id
+    GROUP BY make_name
+    )
+    SELECT MAX(total_vehicles_stolen) as max_stolen, MIN(total_vehicles_stolen) as min_stolen
+    FROM CTE_count;
+
