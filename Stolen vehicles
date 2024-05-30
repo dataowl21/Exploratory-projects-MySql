@@ -131,3 +131,12 @@ JOIN motor_vehicles_theft.stolen_vehicles b
 	ON a.make_id = b.make_id
 GROUP BY  YEAR(date_stolen), MONTH(date_stolen)
 ORDER BY  YEAR(date_stolen), MONTH(date_stolen);
+
+-- Number of stolen vehicles by actual date
+
+SELECT (date_stolen), COUNT(a.make_id) as number_of_stolen_vehicles
+FROM motor_vehicles_theft.make_details a
+JOIN motor_vehicles_theft.stolen_vehicles b
+	ON a.make_id = b.make_id
+GROUP BY (date_stolen)
+ORDER BY  (date_stolen);
